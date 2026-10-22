@@ -67,7 +67,7 @@ dotnet test
 
 ## Roadmap
 
-- [ ] CI with GitHub Actions
+- [x] CI with GitHub Actions
 - [ ] Messaging with RabbitMQ
 - [ ] Deployment to Kubernetes
 - [ ] Claude API integration
