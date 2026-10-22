@@ -1,5 +1,7 @@
 # Knowledge Assistant
 
+[![CI](https://github.com/AhmadAtat/knowledge-assistant/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AhmadAtat/knowledge-assistant/actions/workflows/ci.yml)
+
 A .NET 10 API that will store documents and answer questions about them using the Claude API (RAG). Built step by step with [Claude Code](https://claude.com/claude-code).
 
 > 🚧 **Work in progress.** The project is under active development and is not feature-complete.
