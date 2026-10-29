@@ -7,8 +7,13 @@ services:
       - "8080:8080"
     environment:
       ConnectionStrings__Default: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: ${RABBITMQ_USER}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD}
     depends_on:
       db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
   db:
@@ -27,5 +32,26 @@ services:
       timeout: 5s
       retries: 10
 
+  rabbitmq:
+    image: rabbitmq:4-management
+    # RabbitMQ keeps its data under a node name that includes the hostname (rabbit@<hostname>).
+    # A fixed hostname lets the volume be reused when the container is re-created.
+    hostname: rabbitmq
+    ports:
+      - "127.0.0.1:5672:5672"     # AMQP, for running the API/Worker outside Docker
+      - "127.0.0.1:15672:15672"   # management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+
 volumes:
   pgdata:
+  rabbitmqdata:
