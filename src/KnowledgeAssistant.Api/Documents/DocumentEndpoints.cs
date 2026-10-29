@@ -55,7 +55,7 @@ public static class DocumentEndpoints
     {
         var documents = await db.Documents.AsNoTracking()
             .OrderByDescending(d => d.CreatedAt)
-            .Select(d => new DocumentResponse(d.Id, d.Title, d.Content, d.CreatedAt))
+            .Select(d => new DocumentResponse(d.Id, d.Title, d.Content, d.CreatedAt, d.ProcessedAt))
             .ToListAsync(cancellationToken);
 
         return TypedResults.Ok(documents);
