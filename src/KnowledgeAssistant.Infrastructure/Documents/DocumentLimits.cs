@@ -1,4 +1,4 @@
-namespace KnowledgeAssistant.Api.Documents;
+namespace KnowledgeAssistant.Infrastructure.Documents;
 
 // Shared by the DB schema (AppDbContext) and request validation, so they can't drift apart.
 public static class DocumentLimits

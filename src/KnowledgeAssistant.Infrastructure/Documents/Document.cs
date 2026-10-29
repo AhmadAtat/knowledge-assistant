@@ -1,4 +1,4 @@
-namespace KnowledgeAssistant.Api.Documents;
+namespace KnowledgeAssistant.Infrastructure.Documents;
 
 public class Document
 {

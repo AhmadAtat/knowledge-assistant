@@ -1,4 +1,5 @@
-using KnowledgeAssistant.Api.Data;
+using KnowledgeAssistant.Infrastructure.Data;
+using KnowledgeAssistant.Infrastructure.Documents;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using KnowledgeAssistant.Infrastructure.Documents;
 
 namespace KnowledgeAssistant.Api.Documents;
 
