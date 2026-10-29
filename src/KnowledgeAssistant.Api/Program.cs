@@ -1,10 +1,16 @@
 using KnowledgeAssistant.Api.Documents;
+using KnowledgeAssistant.Api.Messaging;
 using KnowledgeAssistant.Infrastructure.Data;
+using KnowledgeAssistant.Infrastructure.Messaging;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAppDbContext();
+
+// Bound lazily (on first use), so configuration overrides from tests are respected.
+builder.Services.AddOptions<RabbitMqOptions>().BindConfiguration(RabbitMqOptions.SectionName);
+builder.Services.AddSingleton<IDocumentEventPublisher, RabbitMqDocumentEventPublisher>();
 
 // Validates DataAnnotations on endpoint parameters (e.g. CreateDocumentRequest) and returns 400 on failure.
 builder.Services.AddValidation();

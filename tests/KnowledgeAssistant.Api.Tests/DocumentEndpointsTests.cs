@@ -6,7 +6,7 @@ namespace KnowledgeAssistant.Api.Tests;
 // All tests share one database, so each test creates its own uniquely titled documents
 // and never asserts on exact counts.
 [Collection(ApiCollection.Name)]
-public class DocumentEndpointsTests(PostgresApiFactory factory)
+public class DocumentEndpointsTests(ApiFactory factory)
 {
     private readonly HttpClient _client = factory.CreateClient();
 

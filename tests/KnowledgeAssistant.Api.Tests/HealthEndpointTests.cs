@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 namespace KnowledgeAssistant.Api.Tests;
 
 [Collection(ApiCollection.Name)]
-public class HealthEndpointTests(PostgresApiFactory factory)
+public class HealthEndpointTests(ApiFactory factory)
 {
     [Fact]
     public async Task GetHealth_ReturnsOkWithHealthyStatus()
