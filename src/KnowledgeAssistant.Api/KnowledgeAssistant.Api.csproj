@@ -8,13 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- The API is the EF Core "startup project" for `dotnet ef`; the model and migrations live in Infrastructure. -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <!-- Explicit so the API and test projects use the same (latest patch) EF Core version. -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.13" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KnowledgeAssistant.Infrastructure\KnowledgeAssistant.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using KnowledgeAssistant.Infrastructure.Documents;
 
 namespace KnowledgeAssistant.Api.Documents;
 
@@ -6,8 +7,9 @@ public record CreateDocumentRequest(
     [Required, MaxLength(DocumentLimits.TitleMaxLength)] string Title,
     [Required] string Content);
 
-public record DocumentResponse(Guid Id, string Title, string Content, DateTimeOffset CreatedAt)
+public record DocumentResponse(
+    Guid Id, string Title, string Content, DateTimeOffset CreatedAt, DateTimeOffset? ProcessedAt)
 {
     public static DocumentResponse From(Document document) =>
-        new(document.Id, document.Title, document.Content, document.CreatedAt);
+        new(document.Id, document.Title, document.Content, document.CreatedAt, document.ProcessedAt);
 }

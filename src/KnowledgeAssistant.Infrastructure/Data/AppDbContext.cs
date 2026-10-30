@@ -1,7 +1,7 @@
-using KnowledgeAssistant.Api.Documents;
+using KnowledgeAssistant.Infrastructure.Documents;
 using Microsoft.EntityFrameworkCore;
 
-namespace KnowledgeAssistant.Api.Data;
+namespace KnowledgeAssistant.Infrastructure.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {

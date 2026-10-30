@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace KnowledgeAssistant.Api.Data.Migrations
+namespace KnowledgeAssistant.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

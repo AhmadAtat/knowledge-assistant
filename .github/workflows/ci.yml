@@ -39,8 +39,16 @@ jobs:
         run: dotnet test --configuration Release --no-build --verbosity normal
 
   docker-build:
-    name: Docker image build
+    name: Docker image build (${{ matrix.image }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: api
+            dockerfile: Dockerfile
+          - image: worker
+            dockerfile: Dockerfile.worker
     steps:
       - name: Check out code
         uses: actions/checkout@v5
@@ -52,7 +60,9 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: ${{ matrix.dockerfile }}
           push: false
-          tags: knowledge-assistant-api:ci
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: knowledge-assistant-${{ matrix.image }}:ci
+          # Separate cache per image so the two builds don't overwrite each other's layers.
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}

@@ -1,30 +1,16 @@
-using KnowledgeAssistant.Api.Data;
 using KnowledgeAssistant.Api.Documents;
+using KnowledgeAssistant.Api.Messaging;
+using KnowledgeAssistant.Infrastructure.Data;
+using KnowledgeAssistant.Infrastructure.Messaging;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Read the connection string lazily (when the first DbContext is created) so that
-// configuration overrides from tests (WebApplicationFactory) are always respected.
-builder.Services.AddDbContext<AppDbContext>((services, options) =>
-{
-    var connectionString = services.GetRequiredService<IConfiguration>().GetConnectionString("Default");
-    if (connectionString is null)
-    {
-        // `dotnet ef migrations add` only builds the model and needs no database connection.
-        if (EF.IsDesignTime)
-        {
-            options.UseNpgsql();
-            return;
-        }
+builder.Services.AddAppDbContext();
 
-        throw new InvalidOperationException(
-            "Connection string 'ConnectionStrings:Default' is not configured. " +
-            "Use 'dotnet user-secrets' for local development or the ConnectionStrings__Default environment variable.");
-    }
-
-    options.UseNpgsql(connectionString);
-});
+// Bound lazily (on first use), so configuration overrides from tests are respected.
+builder.Services.AddOptions<RabbitMqOptions>().BindConfiguration(RabbitMqOptions.SectionName);
+builder.Services.AddSingleton<IDocumentEventPublisher, RabbitMqDocumentEventPublisher>();
 
 // Validates DataAnnotations on endpoint parameters (e.g. CreateDocumentRequest) and returns 400 on failure.
 builder.Services.AddValidation();

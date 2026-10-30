@@ -4,6 +4,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 COPY src/KnowledgeAssistant.Api/KnowledgeAssistant.Api.csproj src/KnowledgeAssistant.Api/
+COPY src/KnowledgeAssistant.Infrastructure/KnowledgeAssistant.Infrastructure.csproj src/KnowledgeAssistant.Infrastructure/
 RUN dotnet restore src/KnowledgeAssistant.Api/KnowledgeAssistant.Api.csproj
 
 COPY src/ src/

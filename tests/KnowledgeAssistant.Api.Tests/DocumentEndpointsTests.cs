@@ -6,7 +6,7 @@ namespace KnowledgeAssistant.Api.Tests;
 // All tests share one database, so each test creates its own uniquely titled documents
 // and never asserts on exact counts.
 [Collection(ApiCollection.Name)]
-public class DocumentEndpointsTests(PostgresApiFactory factory)
+public class DocumentEndpointsTests(ApiFactory factory)
 {
     private readonly HttpClient _client = factory.CreateClient();
 
@@ -24,6 +24,7 @@ public class DocumentEndpointsTests(PostgresApiFactory factory)
         Assert.Equal(request.Title, body.Title);
         Assert.Equal(request.Content, body.Content);
         Assert.InRange(body.CreatedAt, DateTimeOffset.UtcNow.AddMinutes(-1), DateTimeOffset.UtcNow.AddMinutes(1));
+        Assert.Null(body.ProcessedAt);
         Assert.Equal($"/documents/{body.Id}", response.Headers.Location?.OriginalString);
     }
 
@@ -96,5 +97,6 @@ public class DocumentEndpointsTests(PostgresApiFactory factory)
 
     private sealed record CreateDocumentRequest(string Title, string Content);
 
-    private sealed record DocumentResponse(Guid Id, string Title, string Content, DateTimeOffset CreatedAt);
+    private sealed record DocumentResponse(
+        Guid Id, string Title, string Content, DateTimeOffset CreatedAt, DateTimeOffset? ProcessedAt);
 }
