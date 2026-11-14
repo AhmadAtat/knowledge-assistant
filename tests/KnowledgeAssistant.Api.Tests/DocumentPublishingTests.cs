@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
 using KnowledgeAssistant.Infrastructure.Messaging;
 using RabbitMQ.Client;
@@ -47,6 +48,30 @@ public class DocumentPublishingTests(ApiFactory factory) : IAsyncLifetime
 
         var message = await WaitForMessageAsync(created.Id, TimeSpan.FromSeconds(10));
 
+        AssertIsDocumentCreated(message);
+    }
+
+    [Fact]
+    public async Task ReprocessDocument_PublishesDocumentCreatedMessageAgain()
+    {
+        var response = await _client.PostAsJsonAsync(
+            "/documents", new { Title = $"Test document {Guid.NewGuid()}", Content = "Some content" });
+        response.EnsureSuccessStatusCode();
+        var created = (await response.Content.ReadFromJsonAsync<CreatedDocument>())!;
+        // Consume the message from creating the document first, so the next one must come from reprocessing.
+        var createdMessage = await WaitForMessageAsync(created.Id, TimeSpan.FromSeconds(10));
+        Assert.NotNull(createdMessage);
+
+        var reprocessResponse = await _client.PostAsync($"/documents/{created.Id}/reprocess", null);
+        reprocessResponse.EnsureSuccessStatusCode();
+
+        var message = await WaitForMessageAsync(created.Id, TimeSpan.FromSeconds(10));
+        AssertIsDocumentCreated(message);
+        Assert.NotEqual(createdMessage.MessageId, message.MessageId);
+    }
+
+    private static void AssertIsDocumentCreated([NotNull] ReceivedMessage? message)
+    {
         Assert.NotNull(message);
         Assert.True(message.Persistent);
         Assert.Equal(MessageSerializer.ContentType, message.ContentType);

@@ -32,6 +32,7 @@ POST /documents ──▶ API ──save──▶ PostgreSQL
    - A malformed message goes straight to `document-processing.dead-letter`.
    - A processing error is retried once, then dead-lettered.
    - If publishing fails after the save, the API logs it and still returns 201. The document stays unprocessed (`processedAt: null`). A transactional outbox would close this gap; that comes later.
+5. `POST /documents/{id}/reprocess` sends an existing document through the same pipeline again. The API resets `ProcessedAt` to `null` and publishes `DocumentCreated` again, so the Worker doesn't skip it as already processed. If publishing fails here, the API returns 503: retrying a reprocess is safe, unlike retrying a create.
 
 ## Project structure
 
@@ -147,6 +148,7 @@ Then start the apps from Visual Studio or the command line:
 | POST   | `/documents`      | Create a document (`title` ≤ 200 chars, `content`) and queue it for processing | 201, 400 |
 | GET    | `/documents/{id}` | Get a document by id                              | 200, 404           |
 | GET    | `/documents`      | List all documents, newest first                  | 200                |
+| POST   | `/documents/{id}/reprocess` | Queue a document for processing again, even if it was already processed. Resets `processedAt` to `null`; poll `GET /documents/{id}` for the new timestamp | 202, 404, 503 |
 
 Documents are returned as `{ id, title, content, createdAt, processedAt }`. `processedAt` stays `null` until the Worker has processed the document.
 
